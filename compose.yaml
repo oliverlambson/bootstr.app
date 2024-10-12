@@ -1,0 +1,126 @@
+name: bootstr
+
+# ------------------------------------------------------------------------------
+# common
+# ------------------------------------------------------------------------------
+x-healthcheck: &healthcheck
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 5s
+  start_interval: 0.5s
+
+x-bootstr: &bootstr
+  image: bootstr:${VERSION:-latest}
+  platform: linux/arm64/v8
+  build:
+    context: .
+    dockerfile: deployment/Dockerfile
+    target: bootstr
+    args:
+      sha: ${GIT_SHA:-latest}
+      version: ${VERSION:-latest}
+  develop:
+    watch:
+      - path: ./applications
+        target: /bootstr/applications
+        action: sync
+      - path: ./packages
+        target: /bootstr/packages
+        action: sync
+      - path: ./uv.lock
+        action: rebuild
+
+# ------------------------------------------------------------------------------
+# services
+# ------------------------------------------------------------------------------
+services:
+  webapp:
+    <<: *bootstr
+    networks:
+      - bootstr
+    command: webapp
+    environment:
+      DEV: true
+      BIND_HOST: 0.0.0.0
+      BIND_PORT: 2620
+      PGUSER: bootstr
+      PGPASSWORD: bootstr
+      PGDATABASE: bootstr
+      PGHOST: postgres
+      PGPORT: 5432
+    ports:
+      - 2620:2620
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -sf http://localhost:2620/healthz || exit 1"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      # webapp-init:
+      #   condition: service_completed_successfully
+
+  webadmin:
+    <<: *bootstr
+    networks:
+      - bootstr
+    command: webadmin
+    environment:
+      BIND_HOST: 0.0.0.0
+      BIND_PORT: 2621
+    ports:
+      - 2621:2621
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -sf http://localhost:2621/healthz || exit 1"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    <<: *bootstr
+    networks:
+      - bootstr
+    command: api
+    environment:
+      BIND_HOST: 0.0.0.0
+      BIND_PORT: 2622
+    ports:
+      - 2622:2622
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "curl -sf http://localhost:2622/healthz || exit 1"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  cli:
+    <<: *bootstr
+    networks:
+      - bootstr
+    entrypoint: cli
+    profiles:
+      - cli
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17.0-alpine
+    environment:
+      POSTGRES_DATABASE: &dbname bootstr
+      POSTGRES_USER: *dbname
+      POSTGRES_PASSWORD: *dbname
+      # for libpq
+      PGUSER: *dbname
+      PGPASSWORD: *dbname
+      PGDATABASE: *dbname
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD-SHELL", "pg_isready"]
+    networks:
+      - bootstr
+
+networks:
+  bootstr:
+    name: bootstr

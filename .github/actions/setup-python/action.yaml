@@ -1,0 +1,25 @@
+name: Setup python (uv)
+description: Setup python with uv (including caching)
+
+inputs:
+  uv-version:
+    description: uv version
+    default: ">=0.4.24"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: astral-sh/setup-uv@v3
+      with:
+        version: "${{ inputs.uv-version }}"
+        enable-cache: true
+        cache-dependency-glob: |
+          **/uv.lock
+          **/pyproject.toml
+
+    - uses: actions/setup-python@v5
+      with:
+        python-version-file: pyproject.toml
+
+    - run: uv sync --all-extras --dev
+      shell: bash

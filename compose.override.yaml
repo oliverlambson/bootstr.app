@@ -1,0 +1,25 @@
+services:
+  webapp:
+    build:
+      target: dev
+    command:
+      - "watchfiles"
+      - "webapp"
+      - "applications/webapp"
+      - "packages"
+  webadmin:
+    build:
+      target: dev
+    command:
+      - "watchfiles"
+      - "webadmin"
+      - "applications/webadmin"
+      - "packages"
+  api:
+    build:
+      target: dev
+    command:
+      - "watchfiles"
+      - "api"
+      - "applications/api"
+      - "packages"

@@ -1,0 +1,25 @@
+<div class="bg-stone-300 text-gray-800 min-h-[10vh] flex flex-nowrap">
+    <div class="container mx-auto py-4 flex justify-between">
+        <div>
+            <a
+                href="{{ repo_url }}"
+                target="_blank"
+                class="group flex flex-nowrap content-center items-center"
+            >
+                <div class="w-4 h-4 ">
+                    {% include 'assets/github.svg'%}
+                </div>
+                <p
+                    class="pl-2 underline underline-offset-2 group-hover:underline-offset-4"
+                >
+                    repo
+                </p>
+            </a>
+        </div>
+        <div>
+            {% if dev %}
+            <p><span class="font-light">version:</span> {{ version }}</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

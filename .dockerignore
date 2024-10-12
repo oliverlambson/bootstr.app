@@ -1,0 +1,13 @@
+.venv/
+
+__pycache__/
+
+.git/
+.github/
+docs/
+deployment/
+scripts/
+.ruff_cache/
+.mypy_cache/
+
+**/.env
