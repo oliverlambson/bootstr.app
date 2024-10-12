@@ -1,0 +1,23 @@
+[project]
+name = "bootstr"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = []
+license = "MIT"
+
+[tool.uv]
+dev-dependencies = [
+    "mypy>=1.11.2",
+    "pytest>=8.3.3",
+    "ruff>=0.6.9",
+]
+
+[tool.uv.workspace]
+members = [
+    "packages/core",
+    "packages/app",
+    "packages/app2",
+    "packages/functionality1",
+]

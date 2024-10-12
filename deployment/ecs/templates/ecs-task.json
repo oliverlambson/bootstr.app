@@ -1,0 +1,22 @@
+{
+  "family": "my-service",
+  "containerDefinitions": [
+    {
+      "name": "my-container",
+      "image": "{{ .Values.image }}",
+      "memory": 512,
+      "cpu": 256,
+      "essential": true,
+      "environment": [
+        {
+          "name": "ENVIRONMENT",
+          "value": "{{ .Values.environment }}"
+        },
+        {
+          "name": "CONFIG_PATH",
+          "value": "{{ .Values.configPath }}"
+        }
+      ]
+    }
+  ]
+}
