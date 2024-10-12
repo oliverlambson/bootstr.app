@@ -1,0 +1,79 @@
+[project]
+name = "bootstr"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+# For simplicity, make bootstr a python module that contains all applications
+# this way, we can build one docker image for all applications.
+# If this becomes unmanagable, we can split out into separate application images
+# later.
+dependencies = [
+    "api",
+    "cli",
+    "webadmin",
+    "webapp",
+]
+license = "MIT"
+
+[tool.uv]
+dev-dependencies = [
+    "mypy>=1.11.2",
+    "pytest>=8.3.3",
+    "ruff>=0.6.9",
+    "watchfiles>=0.24.0",
+]
+
+[tool.uv.sources]
+cli = { workspace = true }
+webadmin = { workspace = true }
+webapp = { workspace = true }
+api = { workspace = true }
+core = { workspace = true }
+functionality1 = { workspace = true }
+
+[tool.uv.workspace]
+members = [
+    "applications/api",
+    "applications/cli",
+    "applications/webadmin",
+    "applications/webapp",
+    "packages/core",
+    "packages/functionality1",
+]
+
+[tool.ruff.lint]
+select = [
+  "E",     # pycodestyle errors
+  "W",     # pycodestyle warnings
+  "F",     # pyflakes
+  "I",     # isort
+  "UP",    # pyupgrade
+  "B",     # bugbear
+  "TD",    # todos
+  "PERF",  # performance
+  "RUF",   # ruff
+  "ASYNC", # flake8-async
+  "S",     # bandit
+  "BLE",   # blind except
+  "FBT", # boolean trap
+  "A",   # shadowing builtins
+  "DTZ", # datetime timezone
+  "EM",  # error message
+  "FA",  # future annotations
+  "G",   # logging format
+]
+ignore = [
+  "E501",  # line too long (handled by ruff format)
+  "W505",  # line too long (handled by ruff format)
+  "TD002", # todo author
+  "TD003", # todo link
+  "S101",  # use of assert
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.mypy]
+strict = true
+plugins = ["pydantic.mypy"]
