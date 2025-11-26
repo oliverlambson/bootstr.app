@@ -16,8 +16,8 @@ dependencies = [
 ]
 license = "MIT"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "mypy>=1.11.2",
     "pytest>=8.3.3",
     "ruff>=0.6.9",
