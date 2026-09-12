@@ -5,7 +5,7 @@ FROM python:3.13-slim AS base
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl && \
     rm -rf /var/lib/apt/lists/*
-COPY --from=ghcr.io/astral-sh/uv:0.4.24 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.12.13 /uv /uvx /bin/
 
 FROM base AS bootstr
 ARG sha
